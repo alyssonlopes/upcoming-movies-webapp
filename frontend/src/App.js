@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Button from '@material-ui/core/Button';
+
 class App extends Component {
   state = {
     response: '',
@@ -11,15 +13,14 @@ class App extends Component {
 
   componentDidMount() {
     this.callApi()
-      .then(res => this.setState({ response: res.hello }))
+      .then(res => this.setState({ response: JSON.stringify(res) }))
       .catch(err => console.log(err));
   }
 
   callApi = async () => {
-    const response = await fetch('/api/hello');
+    const response = await fetch('/api/search/movie/rock/1');
     const body = await response.json();
     console.log(body)
-
     if (response.status !== 200) throw Error(body.message);
 
     return body;
@@ -66,7 +67,9 @@ class App extends Component {
             value={this.state.post}
             onChange={e => this.setState({ post: e.target.value })}
           />
-          <button type="submit">Submit</button>
+          <Button type="submit" variant="contained" color="primary">
+      GO!
+    </Button>
         </form>
         <p>{this.state.responseToPost}</p>
       </div>

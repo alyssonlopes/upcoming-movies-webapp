@@ -2,15 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 5000
+const { PORT } = require('./config')
+
+const routes = require('./src/routes')
+
+const port = PORT || 5000
 
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/api/hello', function (req, res) {
-    return res.send({ hello: 'Hello, Welcome to Upcoming Movies Web App!'});
-});
+app.use('/', routes)
 
 app.post('/api/test', (req, res) => {
     console.log(req.body);
