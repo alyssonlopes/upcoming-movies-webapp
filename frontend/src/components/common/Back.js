@@ -7,6 +7,9 @@ import AppBar from '@material-ui/core/AppBar';
 import { Link, withRouter } from 'react-router-dom';
 
 const styles = theme => ({
+  grow: {
+    flexGrow: 1,
+  },
   link: {
     textDecoration: 'none',
     color: 'inherit'
@@ -24,7 +27,7 @@ class Back extends Component {
       <div className={classes.grow}>
         <AppBar position="static" >
           <Toolbar>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" noWrap>
               <Link className={classes.link} to={{ pathname: "/" }}>
                 <KeyboardArrowLeft />
                 <span className={classes.text}>Back</span>

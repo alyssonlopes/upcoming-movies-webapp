@@ -1,25 +1,24 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
+import CircularProgress from '@material-ui/core/CircularProgress'
 
-const styles = theme => ({
-  loadingMessage: {
-    position: 'absolute',
-    top: '40%',
-    left: '40%'
-  }
-});
+const styles = {
+    refreshStyle: {
+        position: 'relative',
+        display: 'block',
+        margin: '0 auto'
+    }
+};
 
-function Loading(props) {
-  const { classes, loading } = props;
-  return (
-    <div style={loading ? { display: 'block' } : { display: 'none' }} className={classes.loadingMessage}>
-      <span role='img' aria-label='emoji' style={{ fontSize: 58, textAlign: 'center', display: 'inline-block', width: '100%' }}>👋</span>
-      <Typography variant="h6">
-        Waiting for input
-      </Typography>
-    </div>
-  );
+const LoaderComponent = ({ isLoading, children }) => {
+    if (isLoading) {
+        return (
+            <CircularProgress
+                style={styles.refreshStyle}
+                size={50}
+            />
+        );
+    }
+    return children ? children : null;
 }
 
-export default withStyles(styles)(Loading);
+export default LoaderComponent;

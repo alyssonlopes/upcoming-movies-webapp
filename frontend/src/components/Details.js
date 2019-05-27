@@ -11,8 +11,8 @@ const styles = theme => ({
         flexGrow: 1,
         overflow: 'hidden',
         backgroundSize: 'cover',
-        backgroundPosition: '0 400px',
-        marginTop: 10,
+        // backgroundPosition: '0 400px',
+        // marginTop: 10,
         paddingBottom: 500
     }
 })

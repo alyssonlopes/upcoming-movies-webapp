@@ -1,6 +1,8 @@
 const request = require('axios')
 const { API_ENDPOINT, API_KEY } = require('../../config')
 
+const { updateMoviePictureUrls } = require('../utils/movie.util')
+
 /**
  * Get a list of upcoming movies by page.
  * 
@@ -9,7 +11,9 @@ const { API_ENDPOINT, API_KEY } = require('../../config')
  */
 const getUpcomingMovies = async (page = 1) => {
     const result = await request.get(`${API_ENDPOINT}/movie/upcoming?api_key=${API_KEY}&page=${page}`)
-    return result.data.results
+    let resultData = result.data
+    resultData.results = resultData.results && resultData.results.map(movie => updateMoviePictureUrls(movie))
+    return resultData
 }
 
 /**
@@ -32,7 +36,7 @@ const getMovieDetails = async (movieId) => {
  */
 const searchMovies = async (query, page = 1) => {
     const result = await request.get(`${API_ENDPOINT}/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`)
-    return result.data.results
+    return result.data
 }
 
 module.exports = {
