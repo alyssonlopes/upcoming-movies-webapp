@@ -4,7 +4,6 @@ class Scroll extends Component {
 
     constructor(props) {
         super(props);
-
         this.handleScroll = this.handleScroll.bind(this);
     }
 

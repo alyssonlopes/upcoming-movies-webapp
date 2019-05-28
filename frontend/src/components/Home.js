@@ -5,24 +5,21 @@ import Typography from '@material-ui/core/Typography';
 
 import Topbar from './Topbar';
 import MovieList from './MovieList'
-import Scroll from './common/Scroll'
+
+import MovieController from '../controllers/MoviesController'
 
 class Home extends Component {
     state = {
         movies: [],
         isLoading: false
-    };
+    }
 
-    upcomingMovies = []
-    searchedMovies = []
-    currentPage = 0
-    currentSearchPage = 0
-    txSearch = null
+    moviesController = new MovieController()
 
     constructor(props) {
         super(props);
         this.loadOneMorePage = this.loadOneMorePage.bind(this);
-        this.onSearch = this.onSearch.bind(this);
+        this.doSearch = this.doSearch.bind(this);
         this.openMovieDetails = this.openMovieDetails.bind(this);
     }
 
@@ -30,61 +27,25 @@ class Home extends Component {
         this.loadOneMorePage()
     }
 
-    fetchMovies = async (page) => {
-        try {
-            const response = await fetch(`/api/movies/${page}`);
-            const body = await response.json();
-            if (response.status !== 200) throw Error(body.message);
-            return body.results
-        } catch (error) {
-            console.log(error)
-        }
-    };
-
-    searchMovies = async (query, page) => {
-        try {
-            const response = await fetch(`/api/search/movie/${query}/${page}`);
-            const body = await response.json();
-            if (response.status !== 200) throw Error(body.message);
-            return body.results
-        } catch (error) {
-            console.log(error)
-        }
-    };
-
     async loadOneMorePage() {
         if (!this.state.isLoading) {
             this.setState({ isLoading: true });
-            let movies
-            if (this.txSearch) {
-                this.currentSearchPage = this.currentSearchPage + 1;
-                const fetchedMovies = await this.searchMovies(this.txSearch, this.currentSearchPage) || []
-                this.searchedMovies = [...this.searchedMovies, ...fetchedMovies]
-                movies = this.searchedMovies
-            } else {
-                this.currentPage = this.currentPage + 1;
-                const fetchedMovies = await this.fetchMovies(this.currentPage) || []
-                this.upcomingMovies = [...this.upcomingMovies, ...fetchedMovies]
-                movies = this.upcomingMovies
-            }
-            this.setState({ movies: movies, isLoading: false });
+            const movies = await this.moviesController.getMoviesByPage()
+            this.setState({ movies: movies, isLoading: false })
         }
     }
 
-    async onSearch(txt) {
+    async doSearch(txt) {
         console.log(txt)
-        if (txt.length > 2) {
-            if (!this.state.isLoading) {
-                this.setState({ isLoading: true });
-                this.currentSearchPage = !this.txSearch ? 1 : this.currentSearchPage + 1;
+        this.moviesController.txSearch = txt
 
-                const fetchedMovies = await this.searchMovies(txt, this.currentSearchPage) || []
-                this.searchedMovies = [...this.searchedMovies, ...fetchedMovies]
-                this.setState({ movies: this.searchedMovies, isLoading: false });
-            }
+        if (txt.length > 2) {
+            this.loadOneMorePage()
+        } else if (!txt) {
+            this.moviesController.currentSearchPage = 0
+            this.moviesController.searchedMovies = []
+            this.setState({ movies: this.moviesController.upcomingMovies });
         }
-        this.txSearch = txt
-        if (!txt) this.setState({ movies: this.upcomingMovies });
     }
 
     openMovieDetails(movie) {
@@ -95,12 +56,10 @@ class Home extends Component {
     render() {
         return (
             <>
-                <Scroll
-                    onPercentageScrolled={this.loadOneMorePage}
-                    percentageScrolledExpected={.8}
-                />
                 <CssBaseline />
-                <Topbar onSearch={this.onSearch} />
+                <Topbar
+                    onTypingSearch={this.doSearch}
+                />
                 <div className="App">
                     <Typography style={styles.title} variant="h6" align="left" paragraph>
                         {this.txSearch ? "Movies found:" : "Upcoming movies:"}
@@ -109,6 +68,7 @@ class Home extends Component {
                         movies={this.state.movies}
                         isLoading={this.state.isLoading}
                         onItemSelected={this.openMovieDetails}
+                        loadOneMorePage={this.loadOneMorePage}
                     />
                 </div>
             </>

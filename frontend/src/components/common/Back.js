@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import { Link, withRouter } from 'react-router-dom';
 
-const styles = theme => ({
+const styles = _ => ({
   grow: {
     flexGrow: 1,
   },

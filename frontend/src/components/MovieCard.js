@@ -12,7 +12,6 @@ const styles = {
     card: {
         cursor: 'pointer',
         overflow: 'hidden',
-        // height: 470,
         maxWidth: 345
     },
     bgImage: {
@@ -33,26 +32,27 @@ class MovieCard extends Component {
 
     render() {
         const { movie } = this.props;
-        // const subtitle = this.state.isMouseOver ? movie.overview : null;
-
         return (
             <Card
                 style={styles.card}
-                onClick={_=>this.props.onItemClicked(movie)}
+                onClick={_ => this.props.onItemClicked(movie)}
             >
                 <CardMedia
                     style={styles.cardMedia}
                     title={movie.title}
                     alt={movie.title}
                     component="img"
-                    image={movie.poster_path}
+                    src={
+                        'images/default-movie.png' 
+                        // movie.poster_path
+                    }
+                    onError={(e) => { e.target.src = 'images/default-movie.png' }}
                 />
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography gutterBottom variant="subtitle1" component="h2">
                         {movie.title}
                     </Typography>
                 </CardContent>
-                {/* <img style={styles.bgImage} src={movie.poster_path} alt="" /> */}
             </Card>
         );
     }

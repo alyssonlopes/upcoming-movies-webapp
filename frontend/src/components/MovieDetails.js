@@ -55,7 +55,12 @@ class MovieDetails extends Component {
                             </header>
                             <Grid container spacing={3}>
                                 <Grid item xs={4}>
-                                    <img src={movie.poster_path} alt="logo" width="300" />
+                                    <img
+                                        src={movie.poster_path}
+                                        onError={(e) => { e.target.src = 'images/default-movie.png' }}
+                                        alt={movie.title}
+                                        width="300"
+                                    />
                                 </Grid>
                                 <Grid item xs>
                                     <div>

@@ -15,7 +15,7 @@ class Topbar extends Component {
     }
 
     onChangeInput(event) {
-        this.props.onSearch && this.props.onSearch(event.target.value)
+        this.props.onTypingSearch && this.props.onTypingSearch(event.target.value)
     }
 
     render() {
