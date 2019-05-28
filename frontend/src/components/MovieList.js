@@ -8,15 +8,12 @@ const styles = {
     root: {
         flexGrow: 1,
         padding: "10px"
-    },
-    movieColumn: {
-        // marginBottom: 20
     }
 }
-const MovieList = ({ movies, isLoading, classes }) => {
+const MovieList = ({ movies, isLoading, classes, onItemSelected }) => {
     const movieColumns = movies ? movies.map(movie => (
-        <Grid item style={styles.movieColumn} key={movie.id} xs={12} sm={4} md={3} lg={3}>
-            <MovieCard movie={movie} />
+        <Grid item style={styles.movieColumn} key={movie.id} xs={12} sm={4} md={3} lg={3} >
+            <MovieCard movie={movie} onItemClicked={m => onItemSelected(m)} />
         </Grid>
     )) : null;
 
@@ -24,7 +21,9 @@ const MovieList = ({ movies, isLoading, classes }) => {
         <div className={classes.root}>
             <Grid container spacing={3}>
                 {movieColumns}
-                <Loading isLoading={isLoading} />
+                <Grid item xs={12}>
+                    <Loading isLoading={isLoading} />
+                </Grid>
             </Grid>
         </div>
     );

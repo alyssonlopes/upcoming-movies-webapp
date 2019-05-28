@@ -24,7 +24,7 @@ const getUpcomingMovies = async (page = 1) => {
  */
 const getMovieDetails = async (movieId) => {
     const result = await request.get(`${API_ENDPOINT}/movie/${movieId}?api_key=${API_KEY}`)
-    return result.data
+    return updateMoviePictureUrls(result.data, 780)
 }
 
 /**
@@ -36,7 +36,9 @@ const getMovieDetails = async (movieId) => {
  */
 const searchMovies = async (query, page = 1) => {
     const result = await request.get(`${API_ENDPOINT}/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`)
-    return result.data
+    let resultData = result.data
+    resultData.results = resultData.results && resultData.results.map(movie => updateMoviePictureUrls(movie))
+    return resultData
 }
 
 module.exports = {

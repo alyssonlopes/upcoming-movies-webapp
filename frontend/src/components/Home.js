@@ -1,67 +1,125 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
 
 import Topbar from './Topbar';
 import MovieList from './MovieList'
+import Scroll from './common/Scroll'
 
 class Home extends Component {
     state = {
         movies: [],
-        isLoading: true
+        isLoading: false
     };
+
+    upcomingMovies = []
+    searchedMovies = []
+    currentPage = 0
+    currentSearchPage = 0
+    txSearch = null
 
     constructor(props) {
         super(props);
-
-        this.handleScroll = this.handleScroll.bind(this);
+        this.loadOneMorePage = this.loadOneMorePage.bind(this);
+        this.onSearch = this.onSearch.bind(this);
+        this.openMovieDetails = this.openMovieDetails.bind(this);
     }
 
     componentDidMount() {
-        window.onscroll = this.handleScroll;
-        this.callApi()
-            .then(res => this.setState({ movies: res.results }))
-            .catch(err => console.log(err));
+        this.loadOneMorePage()
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
-
-    callApi = async () => {
-        const response = await fetch('/api/movies/1');
-        const body = await response.json();
-        console.log(body)
-        if (response.status !== 200) throw Error(body.message);
-
-        return body;
+    fetchMovies = async (page) => {
+        try {
+            const response = await fetch(`/api/movies/${page}`);
+            const body = await response.json();
+            if (response.status !== 200) throw Error(body.message);
+            return body.results
+        } catch (error) {
+            console.log(error)
+        }
     };
 
-    handleScroll() {
-        // const { topMovies } = this.props;
-        // if (!topMovies.isLoading) {
-        //     let percentageScrolled = scrollHelpers.getPercentageScrolledDown(window);
-        //     if (percentageScrolled > .8) {
-        //         const nextPage = this.state.currentPage + 1;
-        //         this.props.getTopMovies(nextPage);
-        //         this.setState({ currentPage: nextPage });
-        //     }
-        // }
+    searchMovies = async (query, page) => {
+        try {
+            const response = await fetch(`/api/search/movie/${query}/${page}`);
+            const body = await response.json();
+            if (response.status !== 200) throw Error(body.message);
+            return body.results
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    async loadOneMorePage() {
+        if (!this.state.isLoading) {
+            this.setState({ isLoading: true });
+            let movies
+            if (this.txSearch) {
+                this.currentSearchPage = this.currentSearchPage + 1;
+                const fetchedMovies = await this.searchMovies(this.txSearch, this.currentSearchPage) || []
+                this.searchedMovies = [...this.searchedMovies, ...fetchedMovies]
+                movies = this.searchedMovies
+            } else {
+                this.currentPage = this.currentPage + 1;
+                const fetchedMovies = await this.fetchMovies(this.currentPage) || []
+                this.upcomingMovies = [...this.upcomingMovies, ...fetchedMovies]
+                movies = this.upcomingMovies
+            }
+            this.setState({ movies: movies, isLoading: false });
+        }
+    }
+
+    async onSearch(txt) {
+        console.log(txt)
+        if (txt.length > 2) {
+            if (!this.state.isLoading) {
+                this.setState({ isLoading: true });
+                this.currentSearchPage = !this.txSearch ? 1 : this.currentSearchPage + 1;
+
+                const fetchedMovies = await this.searchMovies(txt, this.currentSearchPage) || []
+                this.searchedMovies = [...this.searchedMovies, ...fetchedMovies]
+                this.setState({ movies: this.searchedMovies, isLoading: false });
+            }
+        }
+        this.txSearch = txt
+        if (!txt) this.setState({ movies: this.upcomingMovies });
+    }
+
+    openMovieDetails(movie) {
+        console.log(movie)
+        this.props.history.push('/details/' + movie.id)
     }
 
     render() {
         return (
             <>
+                <Scroll
+                    onPercentageScrolled={this.loadOneMorePage}
+                    percentageScrolledExpected={.8}
+                />
                 <CssBaseline />
-                <Topbar />
+                <Topbar onSearch={this.onSearch} />
                 <div className="App">
-                    <Link to='/details' >
-                        <span>Details</span>
-                    </Link>
-                    <MovieList movies={this.state.movies} isLoading={this.state.isLoading} />
+                    <Typography style={styles.title} variant="h6" align="left" paragraph>
+                        {this.txSearch ? "Movies found:" : "Upcoming movies:"}
+                    </Typography>
+                    <MovieList
+                        movies={this.state.movies}
+                        isLoading={this.state.isLoading}
+                        onItemSelected={this.openMovieDetails}
+                    />
                 </div>
             </>
         );
+    }
+}
+
+const styles = {
+    title: {
+        marginLeft: 20,
+        marginTop: 20
     }
 }
 

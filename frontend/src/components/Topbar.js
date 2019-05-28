@@ -9,8 +9,16 @@ import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
 class Topbar extends Component {
-    render() {
+    constructor(props) {
+        super(props)
+        this.onChangeInput = this.onChangeInput.bind(this)
+    }
 
+    onChangeInput(event) {
+        this.props.onSearch && this.props.onSearch(event.target.value)
+    }
+
+    render() {
         const { classes } = this.props;
 
         return (
@@ -30,6 +38,7 @@ class Topbar extends Component {
                                     root: classes.inputRoot,
                                     input: classes.inputInput,
                                 }}
+                                onChange={this.onChangeInput}
                             />
                         </div>
                     </Toolbar>

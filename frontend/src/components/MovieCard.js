@@ -38,6 +38,7 @@ class MovieCard extends Component {
         return (
             <Card
                 style={styles.card}
+                onClick={_=>this.props.onItemClicked(movie)}
             >
                 <CardMedia
                     style={styles.cardMedia}

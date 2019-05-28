@@ -1,14 +1,30 @@
-import React from 'react';
+import { Component } from 'react';
 
-const handleScroll = () => {
-    const { topMovies } = this.props;
-    if (!topMovies.isLoading) {
+class Scroll extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.handleScroll = this.handleScroll.bind(this);
+    }
+
+    componentDidMount() {
+        window.onscroll = this.handleScroll;
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleScroll() {
         let percentageScrolled = getPercentageScrolledDown(window);
-        if (percentageScrolled > .8) {
-            const nextPage = this.state.currentPage + 1;
-            this.props.getTopMovies(nextPage);
-            this.setState({ currentPage: nextPage });
-        }
+        if (percentageScrolled > this.props.percentageScrolledExpected)
+            this.props.onPercentageScrolled && this.props.onPercentageScrolled()
+    }
+
+    render() {
+        const { children } = this.props
+        return children ? children : null;
     }
 }
 
@@ -19,14 +35,6 @@ const getPercentageScrolledDown = (window) => {
     const currentPosition = scrollPos + clientHeight;
     const percentageScrolled = currentPosition / pageHeight;
     return percentageScrolled;
-}
-
-const Scroll = ({ onPercentageScrolled, percentageScrolledExpected, children }) => {
-
-    let percentageScrolled = getPercentageScrolledDown(window);
-    if (percentageScrolled > .8) onPercentageScrolled && onPercentageScrolled()
-
-    return children ? children : null;
 }
 
 export default Scroll;
