@@ -43,8 +43,8 @@ class MovieCard extends Component {
                     alt={movie.title}
                     component="img"
                     src={
-                        'images/default-movie.png' 
-                        // movie.poster_path
+                        // 'images/default-movie.png' 
+                        movie.poster_path
                     }
                     onError={(e) => { e.target.src = 'images/default-movie.png' }}
                 />
