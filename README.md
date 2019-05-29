@@ -1,23 +1,23 @@
 ## Upcoming Movies Web App
 
-## Architeture
+## Project Architeture
 
 It's a Node.js project, using Express as API (server) and React as front-end tecnology (client).
 
-.
-├── client                  # Front-end application developed using React
-│   ├── public              # public files that will be included in the application when run the build
+. 
+├── client                  # Front-end application developed using React  
+│   ├── public              # public files that will be included in the application when run the build  
 │   ├── src                 # Javascript, HTML and CSS source-code 
 │   │   └── actions                
 │   │   └── components                
 │   │   └── helpers        
 │   │   └── reducers                
 │   │   └── services                
-├── server                  # API server developed using Express
-│   ├── controllers         # connect the routes with the services
-│   ├── services            # connect with the data requested
-│   └── utils
-│   └── routes.js           # File including the API`s mapped routes
+├── server                  # API server developed using Express  
+│   ├── controllers         # connect the routes with the services  
+│   ├── services            # connect with the data requested  
+│   └── utils  
+│   └── routes.js           # File including the API`s mapped routes  
 └── ...
 
 ## Build Instructions
