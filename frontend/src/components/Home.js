@@ -78,7 +78,7 @@ class Home extends Component {
 
     render() {
         const currentMovies = this.getCurrentMovies()
-        const movies = currentMovies && currentMovies.response && currentMovies.response.results
+        const movies = currentMovies.response && currentMovies.response.results
 
         return (
             <>

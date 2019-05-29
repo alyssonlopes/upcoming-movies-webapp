@@ -1,17 +1,19 @@
-import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import thunkMiddlware from 'redux-thunk';
 import { createLogger } from 'redux-logger'
-import movieReducer from './reducers/movie.reducer';
+import moviesReducer from './reducers/movies.reducer';
 
-const loggerMiddleware = createLogger();
+let middleware = [thunkMiddlware]
+
+if (process.env.NODE_ENV === 'development')
+    middleware = [...middleware, createLogger()]
 
 const store = createStore(
-    movieReducer,
+    moviesReducer,
     {},
     compose(
         applyMiddleware(
-            thunkMiddlware,
-            loggerMiddleware
+            ...middleware
         )
     )
 );

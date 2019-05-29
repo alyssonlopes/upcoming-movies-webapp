@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
 import withStyles from '@material-ui/core/styles/withStyles';
 import { withRouter } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,42 +7,21 @@ import Back from './common/Back';
 import Loading from './common/Loading';
 import Grid from '@material-ui/core/Grid';
 
+import * as movieActions from '../actions/movie.actions';
+
 class MovieDetails extends Component {
-
-    state = {
-        isLoading: false,
-        movie: null
-    }
-
-    constructor(props) {
-        super(props)
-        this.fetchMovieDetails = this.fetchMovieDetails.bind(this)
-    }
 
     componentDidMount() {
         console.log(this.props.match.params.movie)
-        this.fetchMovieDetails(this.props.match.params.movie)
-    }
-
-    async fetchMovieDetails(movieId) {
-        this.setState({ isLoading: true })
-        let movie
-        try {
-            const response = await fetch(`/api/movie/${movieId}`);
-            const body = await response.json();
-            if (response.status !== 200) throw Error(body.message);
-            console.log(body)
-            movie = body
-        } catch (error) {
-            console.log(error)
+        if(this.props.match.params.movie) {
+            this.props.getMovieDetails(this.props.match.params.movie)
         }
-        this.setState({ isLoading: false, movie })
     }
 
     render() {
-
         const { classes } = this.props;
-        const { movie } = this.state
+        const movieDetails = this.props.movieDetails || {}
+        const movie = movieDetails && movieDetails.response
         const genres = (movie && movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
 
         return (
@@ -49,7 +29,7 @@ class MovieDetails extends Component {
                 <CssBaseline />
                 <div className={classes.root}>
                     <Back />
-                    <Loading isLoading={this.state.isLoading} >
+                    <Loading isLoading={movieDetails.isLoading} >
                         {movie && <>
                             <header className="App-header" style={styles.headerContent(movie.backdrop_path)}>
                             </header>
@@ -97,4 +77,15 @@ const styles = {
     })
 }
 
-export default withRouter(withStyles(styles)(MovieDetails))
+// redux
+const mapStateToProps = (state) => {
+    return {
+        movieDetails: state.movieDetails
+    }
+}
+
+const mapDispatchToProps = {
+    getMovieDetails: movieActions.getMovieDetails
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MovieDetails)))

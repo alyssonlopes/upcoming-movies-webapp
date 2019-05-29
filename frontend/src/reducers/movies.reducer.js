@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { createAsyncReducer } from '../helpers/redux.helper';
+import { uniqueArray } from '../helpers/array.util'
 import { ACTIONS as MOVIE_ACTIONS } from '../actions/movie.actions';
 
 /**
@@ -24,9 +25,7 @@ const moviesSuccessReducer = (state, action) => {
     };
 }
 
-const uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s))
-
-const movieBrowserReducer = combineReducers({
+const moviesReducer = combineReducers({
     upcomingMovies: createAsyncReducer(MOVIE_ACTIONS.GET_UPCOMING_MOVIES, {
         [`${MOVIE_ACTIONS.GET_UPCOMING_MOVIES}_SUCCESS`]: moviesSuccessReducer
     }),
@@ -36,4 +35,4 @@ const movieBrowserReducer = combineReducers({
     movieDetails: createAsyncReducer(MOVIE_ACTIONS.GET_MOVIE_DETAILS),
 });
 
-export default movieBrowserReducer;
+export default moviesReducer;
