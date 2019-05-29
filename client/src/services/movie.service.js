@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL
+const API_URL = process.env.REACT_APP_API_URL || ''
 
 export const getUpcomingMovies = async ({ page }) => {
     return await fetch(`${API_URL}/api/movies/${page}`);
