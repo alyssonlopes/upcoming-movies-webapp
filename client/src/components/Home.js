@@ -48,7 +48,6 @@ class Home extends Component {
     }
 
     async doSearch(txt) {
-        console.log(txt)
         this.searchText = txt
 
         if (this.searchTimeout)

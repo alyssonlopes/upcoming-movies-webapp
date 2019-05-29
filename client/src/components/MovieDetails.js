@@ -12,7 +12,6 @@ import * as movieActions from '../actions/movie.actions';
 class MovieDetails extends Component {
 
     componentDidMount() {
-        console.log(this.props.match.params.movie)
         if(this.props.match.params.movie) {
             this.props.getMovieDetails(this.props.match.params.movie)
         }
